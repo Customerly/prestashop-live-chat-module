@@ -1,6 +1,7 @@
 <?php
 /**
  * @author Customerly.
+ * @copyright  Customerly  2016-2019
  */
 
 if (!defined('_PS_VERSION_')) {
@@ -55,8 +56,8 @@ class Customerly extends Module
         $this->context->controller->addCSS($this->_path . 'views/css/admin.css');
         $this->initFieldsForm();
         if (Tools::getIsset(Tools::getValue('savecustomerly'))) {
-            foreach ($this->fields_form as $form)
-                foreach ($form['form']['input'] as $field)
+            foreach ($this->fields_form as $form) {
+                foreach ($form['form']['input'] as $field) {
                     if (Tools::getIsset($field['validation'])) {
                         $errors = array();
                         $value = Tools::getValue($field['name']);
@@ -88,15 +89,17 @@ class Customerly extends Module
                         } else
                             Configuration::updateValue('CLY_' . Tools::strtoupper($field['name']), $value, true);
                     }
+                }
+            }
 
-            if (count($this->validation_errors))
+            if (count($this->validation_errors)) {
                 $this->_html .= $this->displayError(implode('<br/>', $this->validation_errors));
-            else
+            } else {
                 $this->_html .= $this->displayConfirmation($this->getTranslator()->trans('Settings updated', array(), 'Admin.Theme.Panda'));
+            }
         }
 
         $helper = $this->initForm();
-
         return $this->_html . $helper->generateForm($this->fields_form);
     }
 
@@ -155,7 +158,6 @@ class Customerly extends Module
     public function hookDisplayHeader($params)
     {
         if (!$this->isCached('module:customerly/views/templates/hook/header.tpl', $this->getCacheId())) {
-
             $project_id = Configuration::get('CLY_PROJECT_ID');
             $live_chat_snippet = '<!-- Customerly Integration Code --><script>window.customerlySettings = {app_id: "' . $project_id . '"};!function(){function e(){var e=t.createElement("script");e.type="text/javascript",e.async=!0,e.src="https://widget.customerly.io/widget/' . $project_id . '";var r=t.getElementsByTagName("script")[0];r.parentNode.insertBefore(e,r)}var r=window,t=document,n=function(){n.c(arguments)};r.customerly_queue=[],n.c=function(e){r.customerly_queue.push(e)},r.customerly=n,r.attachEvent?r.attachEvent("onload",e):r.addEventListener("load",e,!1)}();</script>';
             $this->context->smarty->assign('customerly', array(

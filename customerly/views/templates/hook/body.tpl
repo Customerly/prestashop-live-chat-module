@@ -19,12 +19,10 @@
 *
 *  @author PrestaShop SA
 <contact@prestashop.com>
-*  @copyright  2007-2014 PrestaShop SA
+*  @copyright  2007-2019 PrestaShop SA
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-{if isset($customerly)}
-    {if $customerly.head_code}
-        {$customerly.head_code nofilter}
-    {/if}
+{if isset($customerly_body_code)}
+    {$customerly_body_code nofilter}
 {/if}
