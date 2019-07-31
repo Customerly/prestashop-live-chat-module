@@ -25,6 +25,6 @@
 */
 {if isset($customerly)}
     {if $customerly.head_code}
-        {$customerly.head_code nofilter}
+        {$customerly.head_code nofilter | escape:'htmlall':'UTF-8'}
     {/if}
 {/if}

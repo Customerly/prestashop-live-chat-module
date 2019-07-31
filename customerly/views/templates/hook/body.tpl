@@ -24,5 +24,5 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 {if isset($customerly_body_code)}
-    {$customerly_body_code nofilter}
+    {$customerly_body_code nofilter | escape:'htmlall':'UTF-8'}
 {/if}
