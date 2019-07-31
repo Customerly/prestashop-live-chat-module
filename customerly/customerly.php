@@ -2,6 +2,7 @@
 /**
  * @author Customerly.
  * @copyright  Customerly  2016-2019
+ * @license Apache
  */
 
 if (!defined('_PS_VERSION_')) {
@@ -26,7 +27,7 @@ class Customerly extends Module
         $this->module_key = '084fe8aecafea8b2f84cca493377eb9b';
         parent::__construct();
         $this->displayName = $this->l('Customerly Live Chat');
-        $this->description = $this->l('This module allows you to add a complete Live Chat');
+        $this->description = $this->l('Install Live Chat on your Shop');
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
     }
 
@@ -61,15 +62,14 @@ class Customerly extends Module
                     if (Tools::getIsset($field['validation'])) {
                         $errors = array();
                         $value = Tools::getValue($field['name']);
-                        if (Tools::getIsset($field['required']) && $field['required'] && $value == false && (string)$value != '0')
+                        if (Tools::getIsset($field['required']) && $field['required'] && $value == false && (string)$value != '0') {
                             $errors[] = sprintf(Tools::displayError('Field "%s" is required.'), $field['label']);
-                        elseif ($value) {
-                            if (!Validate::$field_validation($value))
-                                $errors[] = sprintf(Tools::displayError('Field "%s" is invalid.'), $field['label']);
                         }
                         // Set default value
-                        if ($value === false && isset($field['default_value']))
+                        if ($value === false && Tools::getIsset($field['default_value'])) {
                             $value = $field['default_value'];
+                        }
+
 
                         if (count($errors)) {
                             $this->validation_errors = array_merge($this->validation_errors, $errors);
@@ -86,19 +86,18 @@ class Customerly extends Module
                                     break;
                             }
                             Configuration::updateValue('CLY_' . Tools::strtoupper($field['name']), $value);
-                        } else
+                        } else {
                             Configuration::updateValue('CLY_' . Tools::strtoupper($field['name']), $value, true);
+                        }
                     }
                 }
             }
-
             if (count($this->validation_errors)) {
                 $this->_html .= $this->displayError(implode('<br/>', $this->validation_errors));
             } else {
                 $this->_html .= $this->displayConfirmation($this->getTranslator()->trans('Settings updated', array(), 'Admin.Theme.Panda'));
             }
         }
-
         $helper = $this->initForm();
         return $this->_html . $helper->generateForm($this->fields_form);
     }
@@ -150,7 +149,7 @@ class Customerly extends Module
     private function getConfigFieldsValues()
     {
         $fields_values = array(
-            'project_id' => Configuration::get('CLY_PROJECT_ID'),
+            'project_id' => Configuration::get('CLY_PROJECT_ID')
         );
         return $fields_values;
     }
