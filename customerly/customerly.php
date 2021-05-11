@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Customerly.
- * @copyright  Customerly  2016-2019
+ * @copyright  Customerly  2016-2021
  * @license Apache
  */
 
@@ -56,20 +56,24 @@ class Customerly extends Module
     {
         $this->context->controller->addCSS($this->_path . 'views/css/admin.css');
         $this->initFieldsForm();
-        if (Tools::getIsset(Tools::getValue('savecustomerly'))) {
+        if (isset($_POST['savecustomerly'])) {
             foreach ($this->fields_form as $form) {
                 foreach ($form['form']['input'] as $field) {
-                    if (Tools::getIsset($field['validation'])) {
+                    if (isset($field['validation'])) {
                         $errors = array();
                         $value = Tools::getValue($field['name']);
-                        if (Tools::getIsset($field['required']) && $field['required'] && $value == false && (string)$value != '0') {
+                        if (isset($field['required']) && $field['required'] && $value == false && (string)$value != '0') {
                             $errors[] = sprintf(Tools::displayError('Field "%s" is required.'), $field['label']);
+                        } elseif ($value) {
+                            $field_validation = $field['validation'];
+                            if (!Validate::$field_validation($value)) {
+                                $errors[] = sprintf(Tools::displayError('Field "%s" is invalid.'), $field['label']);
+                            }
                         }
                         // Set default value
-                        if ($value === false && Tools::getIsset($field['default_value'])) {
+                        if ($value === false && isset($field['default_value'])) {
                             $value = $field['default_value'];
                         }
-
 
                         if (count($errors)) {
                             $this->validation_errors = array_merge($this->validation_errors, $errors);
@@ -86,9 +90,8 @@ class Customerly extends Module
                                     break;
                             }
                             Configuration::updateValue('CLY_' . Tools::strtoupper($field['name']), $value);
-                        } else {
+                        } else
                             Configuration::updateValue('CLY_' . Tools::strtoupper($field['name']), $value, true);
-                        }
                     }
                 }
             }
