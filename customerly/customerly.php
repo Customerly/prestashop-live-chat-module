@@ -20,7 +20,7 @@ class Customerly extends Module
     {
         $this->name = 'customerly';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.0';
+        $this->version = '2.0.0';
         $this->author = 'customerly.io';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -36,7 +36,7 @@ class Customerly extends Module
         $result = true;
         if (!parent::install()
             || !Configuration::updateValue('CLY_PROJECT_ID', '')
-            || !$this->registerHook('displayHeader')
+            || !$this->registerHook('displayBeforeBodyClosingTag')
         ) {
             $result = false;
         }
@@ -157,16 +157,16 @@ class Customerly extends Module
         return $fields_values;
     }
 
-    public function hookDisplayHeader($params)
+    public function hookDisplayBeforeBodyClosingTag($params)
     {
-        if (!$this->isCached('module:customerly/views/templates/hook/header.tpl', $this->getCacheId())) {
+        if (!$this->isCached('module:customerly/views/templates/hook/checkout.tpl', $this->getCacheId())) {
             $project_id = Configuration::get('CLY_PROJECT_ID');
             $live_chat_snippet = '<!-- Customerly Live Chat Snippet Code --><script>!function(){var e=window,i=document,t="customerly",n="queue",o="load",r="settings",u=e[t]=e[t]||[];if(u.t){return void u.i("[customerly] SDK already initialized. Snippet included twice.")}u.t=!0;u.loaded=!1;u.o=["event","attribute","update","show","hide","open","close"];u[n]=[];u.i=function(t){e.console&&!u.debug&&console.error&&console.error(t)};u.u=function(e){return function(){var t=Array.prototype.slice.call(arguments);return t.unshift(e),u[n].push(t),u}};u[o]=function(t){u[r]=t||{};if(u.loaded){return void u.i("[customerly] SDK already loaded. Use customerly.update to change settings.")}u.loaded=!0;var e=i.createElement("script");e.type="text/javascript",e.async=!0,e.src="https://messenger.customerly.io/launcher.js";var n=i.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};u.o.forEach(function(t){u[t]=u.u(t)})}();customerly.load({"app_id":"' . $project_id . '"});</script><!-- End of Customerly Live Chat Snippet Code -->';
 
             $this->context->smarty->assign('customerly', array(
-                'head_code' => $live_chat_snippet,
+                'footer_code' => $live_chat_snippet,
             ));
         }
-        return $this->fetch('module:customerly/views/templates/hook/header.tpl', $this->getCacheId());
+        return $this->fetch('module:customerly/views/templates/hook/checkout.tpl', $this->getCacheId());
     }
 }
