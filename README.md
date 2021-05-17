@@ -1,5 +1,5 @@
 
-# prestashop-live-chat-module
+# Prestashop Live Chat Module
 
 Customerly Live Chat module for your Prestashop application.
 
